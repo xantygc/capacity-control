@@ -1,22 +1,21 @@
-package com.capacity.control.dto;
+package com.capacity.control.request;
 
-import com.capacity.control.enums.BonusType;
-import com.capacity.control.enums.PaymentType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class User
+public class SubscriptorRequest
 {
     private String name;
-    private String firstName;
+    private UUID subscriptionId;
     private String surname;
     private String documentId;
-    private LocalDate dateOfBirth;
-    private BonusType bonusType;
-    private PaymentType paymentType;
+    private LocalDate birthdate;
+    private String payment;
+    private String address;
 }
