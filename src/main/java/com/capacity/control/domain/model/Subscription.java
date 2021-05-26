@@ -4,14 +4,13 @@ import com.capacity.control.exceptions.SubscriptorAlreadyExistsException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,7 +40,12 @@ public class Subscription
     private Boolean paid = false;
     private Integer times = -1;
     @OneToMany
-    private List<Subscriptor> members;
+    private List<Subscriber> members = new ArrayList<>();
+
+    public Subscription (UUID subscriptionId)
+    {
+        this.id = subscriptionId;
+    }
 
     public void reduceTime ()
     {
@@ -52,13 +56,13 @@ public class Subscription
 
     }
 
-    public void addMember (Subscriptor subscriptor) throws SubscriptorAlreadyExistsException
+    public void addMember (Subscriber subscriber) throws SubscriptorAlreadyExistsException
     {
-        if (members.stream().anyMatch(m -> m.getId().equals(subscriptor.getId())))
+        if (members.stream().anyMatch(m -> m.getId().equals(subscriber.getId())))
         {
-            throw new SubscriptorAlreadyExistsException("Este miembro ya existe en este abono", subscriptor);
+            throw new SubscriptorAlreadyExistsException("Este miembro ya existe en este abono", subscriber);
         }
-        members.add(subscriptor);
+        members.add(subscriber);
     }
 
     public void paid (PaymentType type, BigDecimal amount)

@@ -1,6 +1,6 @@
 package com.capacity.control.exceptions;
 
-import com.capacity.control.domain.model.Subscriptor;
+import com.capacity.control.domain.model.Subscriber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,5 +8,5 @@ import lombok.Getter;
 public class SubscriptorAlreadyExistsException extends Throwable
 {
     private final String message;
-    private final Subscriptor subscriptor;
+    private final Subscriber subscriber;
 }
