@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -20,5 +21,7 @@ public class Subscription
     private BigDecimal cost;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Location location;
     private Boolean paid = false;
+    private List<Subscriber> members;
 }

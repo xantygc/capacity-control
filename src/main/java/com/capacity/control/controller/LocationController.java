@@ -1,5 +1,6 @@
 package com.capacity.control.controller;
 
+import com.capacity.control.application.LocationManagerService;
 import com.capacity.control.domain.model.Subscriber;
 import com.capacity.control.dto.Location;
 import com.capacity.control.exceptions.CapacityException;
@@ -21,6 +22,10 @@ import java.util.stream.StreamSupport;
 @RequestMapping("/location")
 public class LocationController
 {
+
+    @Autowired
+    private LocationManagerService locationManagerService;
+
     @Autowired
     private LocationRepository locationRepository;
 
@@ -38,7 +43,7 @@ public class LocationController
     public List<Location> findAll()
     {
         return StreamSupport.stream(locationRepository.findAll().spliterator(), false)
-                .map(location -> new Location(location.getId(),location.getName(), location.getCapacity(), location.getAttendance()))
+                .map(location -> new Location(location.getUuid(),location.getName(), location.getCapacity(), location.getAttendance()))
                 .collect(Collectors.toList());
     }
 
@@ -48,7 +53,7 @@ public class LocationController
         Optional<com.capacity.control.domain.model.Location> location = locationRepository.findById(id);
         if(location.isPresent())
         {
-            return new Location(location.get().getId(), location.get().getName(),location.get().getCapacity(),location.get().getAttendance());
+            return new Location(location.get().getUuid(), location.get().getName(),location.get().getCapacity(),location.get().getAttendance());
         }
         return null;
     }
@@ -78,42 +83,12 @@ public class LocationController
     @GetMapping("/{id}/register/{barcode}")
     public void register(@PathVariable Integer id, @PathVariable String barcode) throws CapacityException, OveruseSubscriptionException
     {
-        Optional<Subscriber> subscriber = subscriberRepository.findByBarcode(barcode.substring(0,barcode.length()-1));
-        Optional<com.capacity.control.domain.model.Location> location = locationRepository.findById(id);
-        if(subscriber.isPresent() && location.isPresent())
-        {
-            if((location.get().getAttendance() + 1) > location.get().getCapacity())
-            {
-                throw new CapacityException("Aforo completo", null);
-            }
-
-            if(subscriber.get().isRegister())
-            {
-                throw new OveruseSubscriptionException("Abono reutilizado", subscriber.get().getSubscription().getId());
-            }
-
-            subscriber.get().register();
-            subscriberRepository.save(subscriber.get());
-            location.get().setAttendance(location.get().getAttendance() + 1);
-            locationRepository.save(location.get());
-        }
+        locationManagerService.registerEntry(id, barcode);
     }
 
     @GetMapping("/{id}/unregister/{barcode}")
     public void unregister(@PathVariable Integer id, @PathVariable String barcode) throws OveruseSubscriptionException
     {
-        Optional<Subscriber> subscriber = subscriberRepository.findByBarcode(barcode.substring(0,barcode.length()-1));
-        Optional<com.capacity.control.domain.model.Location> location = locationRepository.findById(id);
-        if(subscriber.isPresent() && location.isPresent())
-        {
-            if(subscriber.get().isRegister())
-            {
-                throw new OveruseSubscriptionException("Abono ya pasado", subscriber.get().getSubscription().getId());
-            }
-            subscriber.get().unregister();
-            subscriberRepository.save(subscriber.get());
-            location.get().setAttendance(location.get().getAttendance() - 1);
-            locationRepository.save(location.get());
-        }
+        locationManagerService.unregisterEntry(id, barcode);
     }
 }

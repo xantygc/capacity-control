@@ -13,10 +13,10 @@ public class Subscriber
 {
     private UUID id;
     private String name;
-    private UUID subscriptionId;
+    private UUID subscription_id;
     private String surname;
     private String documentId;
     private LocalDate birthdate;
     private String address;
-    private Integer locationId;
+    private String relationship;
 }

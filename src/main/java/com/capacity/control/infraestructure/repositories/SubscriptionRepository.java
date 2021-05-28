@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface SubscriptionRepository extends CrudRepository<Subscription, UUID>
 {
-
+    Subscription findByUuid(UUID uuid);
 }

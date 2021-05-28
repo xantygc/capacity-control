@@ -2,7 +2,7 @@ package com.capacity.control.controller;
 
 
 import com.capacity.control.application.BarcodeGenerator;
-import com.capacity.control.application.SubscriberConverter;
+import com.capacity.control.application.LayerConverter;
 import com.capacity.control.infraestructure.repositories.SubscriberRepository;
 import com.capacity.control.dto.Subscriber;
 import lombok.extern.log4j.Log4j2;
@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class SubscriberController
     private BarcodeGenerator barcodeGenerator;
 
     @Autowired
-    private SubscriberConverter converter;
+    private LayerConverter converter;
 
     @PostMapping
     public Subscriber add (@RequestBody Subscriber request)
@@ -53,7 +52,7 @@ public class SubscriberController
     public ResponseEntity<byte[]> generateBarcode(@PathVariable UUID id) throws BarcodeException
     {
         byte[] bytes = null;
-        Optional<com.capacity.control.domain.model.Subscriber> subscriber = subscriberRepository.findById(id);
+        Optional<com.capacity.control.domain.model.Subscriber> subscriber = subscriberRepository.findByUuid(id);
         if(subscriber.isPresent())
         {
             bytes = barcodeGenerator.generate(subscriber.get().getBarcode()).toByteArray();

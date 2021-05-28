@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -15,8 +16,10 @@ import java.util.UUID;
 public class Subscriber
 {
     @Id
-    private UUID id = UUID.randomUUID();
+    private int id;
+    private UUID uuid = UUID.randomUUID();
     @ManyToOne
+    @JoinColumn(name="id", nullable=false, insertable = false, updatable = false)
     private Subscription subscription;
     private String name;
     private String surname;
@@ -24,21 +27,19 @@ public class Subscriber
     private String documentId;
     private String address;
     private boolean register;
-    @ManyToOne
-    private Location location;
     private String barcode;
+    private String relationship;
 
-    public Subscriber (UUID subscriptionId, String name, String surname, LocalDate birthdate, String documentId, String address, Location location)
+    public Subscriber (Subscription subscription, String name, String surname, LocalDate birthdate, String documentId, String address, String relationship)
     {
-        Subscription subscription = new Subscription(subscriptionId);
-
         this.subscription = subscription;
         this.name = name;
         this.surname = surname;
         this.birthdate = birthdate;
         this.documentId = documentId;
         this.address = address;
-        this.location = location;
+        this.relationship = relationship;
+
 
         int year = LocalDate.now().getYear();
         StringBuilder barcodeText = new StringBuilder();

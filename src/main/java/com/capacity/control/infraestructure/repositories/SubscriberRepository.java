@@ -9,4 +9,5 @@ import java.util.UUID;
 public interface SubscriberRepository extends CrudRepository<Subscriber, UUID>
 {
     Optional<Subscriber> findByBarcode(String barcode);
+    Optional<Subscriber> findByUuid(UUID uuid);
 }

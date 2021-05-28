@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,7 +32,8 @@ public class Subscription
     }
 
     @Id
-    private UUID id = UUID.randomUUID();
+    private int id;
+    private UUID uuid = UUID.randomUUID();
     private SubscriptionType type;
     private PaymentType payment;
     private BigDecimal cost;
@@ -39,12 +41,14 @@ public class Subscription
     private LocalDate endDate;
     private Boolean paid = false;
     private Integer times = -1;
-    @OneToMany
-    private List<Subscriber> members = new ArrayList<>();
+    @ManyToOne
+    private Location location;
+    @OneToMany(mappedBy = "subscription")
+    private List<Subscriber> subscribers = new ArrayList<>();
 
     public Subscription (UUID subscriptionId)
     {
-        this.id = subscriptionId;
+        this.uuid = subscriptionId;
     }
 
     public void reduceTime ()
@@ -58,11 +62,11 @@ public class Subscription
 
     public void addMember (Subscriber subscriber) throws SubscriptorAlreadyExistsException
     {
-        if (members.stream().anyMatch(m -> m.getId().equals(subscriber.getId())))
+        if (subscribers.stream().anyMatch(m -> m.getId()==subscriber.getId()))
         {
             throw new SubscriptorAlreadyExistsException("Este miembro ya existe en este abono", subscriber);
         }
-        members.add(subscriber);
+        subscribers.add(subscriber);
     }
 
     public void paid (PaymentType type, BigDecimal amount)

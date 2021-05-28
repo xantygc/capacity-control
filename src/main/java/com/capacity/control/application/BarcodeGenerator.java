@@ -19,9 +19,9 @@ public class BarcodeGenerator
         {
             Barcode barcode = BarcodeFactory.createEAN13(barcodeText);
             barcode.setDrawingText(true);
-            barcode.setResolution(800);
+            barcode.setResolution(99999);
             barcode.setFont(new Font("Arial", Font.PLAIN, 18));
-            barcode.setBarHeight(120);
+            barcode.setBarHeight(80);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
             BarcodeImageHandler.writeJPEG(barcode, outStream);

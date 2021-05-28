@@ -13,6 +13,6 @@ import java.util.UUID;
 public class OveruseSubscriptionException extends Exception
 {
     private final String message;
-    private final UUID subscription;
+    private final Subscription subscription;
 
 }
